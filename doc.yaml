@@ -1,0 +1,320 @@
+openapi: 3.0.0
+info:
+  description: "This is a basic API "
+  version: "1.0.0"
+  title: "Final Project SO"
+  contact:
+    email: "solanoae@uninorte.edu.co  ccandamil@uninorte.edu.co"
+servers:
+  - url: 'http://localhost/api/v1'
+components:
+  schemas:
+    Anime:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Mushoku Tensei
+        episodes:
+          type: integer
+          example: 23
+        airDate:
+          type: string
+          format: date
+          example: 2021-01-10
+        endDate:
+          type: string
+          format: date
+          example: 2021-10-20
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+        deletedAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+    Score:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        animeId:
+          type: integer
+          example: 1
+        score:
+          type: number
+          example: 9
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+        deletedAt:
+          type: string
+          format: date-time
+          example: 2021-09-09T18:02:39.285Z
+  parameters:
+    onlyId:
+      in: path
+      name: id
+      example: 1
+      required: true
+      schema:
+        type: integer
+  requestBodies:
+    Anime_Post:
+      required: true
+      content:
+        application/json:
+          schema:
+            required:
+              - name
+            properties:
+              name:
+                type: string
+              episodes:
+                type: integer
+              airDate:
+                type: string
+                format: date
+              endDate:
+                type: string
+                format: date
+          examples:
+            valid:
+              value:
+                name: Mushoku Tensei
+                episodes: 23
+                airDate: 2017-07-21
+                endDate: 2017-07-21
+    Anime_Patch:
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              episodes:
+                type: integer
+              airDate:
+                type: string
+                format: date
+              endDate:
+                type: string
+                format: date
+          examples:
+            valid:
+              value:
+                episodes: 23
+                airDate: 2021-01-10
+                endDate: 2021-10-20
+    Score_Post:
+      required: true
+      content:
+        application/json:
+          schema:
+            required:
+              - animeId
+              - score
+            properties:
+              animeId:
+                type: string
+              score:
+                type: number
+          examples:
+            valid:
+              value:
+                animeId: 1
+                score: 9
+  responses:
+    "400Anime":
+      description: Failed request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              properties:
+                status:
+                  type: string
+                  example: error
+                data:
+                  type: string
+                  example: name not provided
+    "404Anime":
+      description: Failed request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              properties:
+                status:
+                  type: string
+                  example: error
+                data:
+                  type: string
+                  example: Anime not found
+    "400-invalidId":
+      description: Failed request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              properties:
+                status:
+                  type: string
+                  example: error
+                data:
+                  type: string
+                  example: Invalid id
+tags:
+  - name: Animes
+    description: CRUD Animes
+  - name: Score
+    description: Post score in anime
+paths:
+  '/animes':
+    post:
+      tags:
+        - Animes
+      description: add a new anime
+      requestBody:
+        $ref: "#/components/requestBodies/Anime_Post"
+      responses:
+        "201":
+          description: Successfull request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    data:
+                      $ref: '#/components/schemas/Anime'
+        "400":
+          $ref: '#/components/responses/400Anime'
+    get:
+      tags:
+        - Animes
+      description: get all animes
+      responses:
+        "200":
+          description: Successfull request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Anime'
+  '/animes/{id}':
+    get:
+      tags:
+        - Animes
+      description: get one anime
+      parameters:
+        - $ref: '#/components/parameters/onlyId'
+      responses:
+        "200":
+          description: Successfull request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    data:
+                      $ref: '#/components/schemas/Anime'
+        "400":
+          $ref: '#/components/responses/400-invalidId'
+        "404":
+          $ref: '#/components/responses/404Anime'
+    delete:
+      tags:
+        - Animes
+      description: delete anime
+      parameters:
+        - $ref: '#/components/parameters/onlyId'
+      responses:
+        "204":
+          description: Successfull request
+        "400":
+          $ref: '#/components/responses/400-invalidId'
+        "404":
+          $ref: '#/components/responses/404Anime'
+    patch:
+      tags:
+        - Animes
+      description: update anime
+      parameters:
+        - $ref: '#/components/parameters/onlyId'
+      requestBody:
+        $ref: "#/components/requestBodies/Anime_Patch"
+      responses:
+        "200":
+          description: Successfull request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    data:
+                      $ref: '#/components/schemas/Anime'
+        "400":
+          $ref: '#/components/responses/400-invalidId'
+        "404":
+          $ref: '#/components/responses/404Anime'
+  '/scores/{id}':
+    post:
+      tags:
+        - Score
+      description: add a new score
+      requestBody:
+        $ref: "#/components/requestBodies/Score_Post"
+      responses:
+        "201":
+          description: Successfull request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    data:
+                      $ref: '#/components/schemas/Score'
+        "400":
+          $ref: '#/components/responses/400-invalidId'
+        "404":
+          $ref: '#/components/responses/404Anime'
