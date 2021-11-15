@@ -13,3 +13,6 @@ Estudiantes: Cristian Porto y Erick Solano
 ## Documentacion
     http://localhost/api-docs/
     
+## Link DockerHUB
+    https://hub.docker.com/repository/docker/solanoae/ms-animes
+    
